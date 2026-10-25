@@ -145,6 +145,13 @@ body{font-feature-settings:"tnum";-webkit-font-smoothing:antialiased}
 .btn{border-radius:14px}
 #notch.open .panel>*{animation:rise .5s .12s both cubic-bezier(.2,.9,.3,1)}
 @keyframes rise{from{opacity:0;transform:translateY(10px) scale(.985)}}
+
+/* ---- v0.4.1: shell grows, content stays still (no squish/reflow) ---- */
+.full{inset:auto;top:0;left:50%;width:600px;height:264px;transform:translateX(-50%);transition:opacity .12s}
+#notch.open .full{transition:opacity .3s .24s}
+#notch{transition:width .55s .06s cubic-bezier(.3,1.15,.4,1),height .55s .06s cubic-bezier(.3,1.15,.4,1),border-radius .55s .06s,transform .45s cubic-bezier(.2,.9,.25,1)}
+#notch.open{transition:width .55s cubic-bezier(.3,1.15,.4,1),height .55s cubic-bezier(.3,1.15,.4,1),border-radius .55s,transform .45s cubic-bezier(.2,.9,.25,1)}
+.cap{transition:opacity .12s}
 </style></head><body>
 <div id="notch"><div class="cap" id="cap" aria-label="Open notch"><span id="miniBug"></span><span class="st" id="capTxt"></span><span class="clk" id="clk"></span></div>
 <div class="full"><aside class="stage"><span id="bigBug"></span><div class="say" id="say" aria-live="polite"></div><div class="mood" id="mood"></div></aside>
@@ -199,7 +206,7 @@ if(st.tab==='music')h='<div class="music '+(st.m.playing?'playing':'')+'"><div s
 if(st.tab==='set')h='<div class="two"><div class="list">'+sw('Hide in fullscreen apps','fs',st.fs)+sw('Collapse when I click away','blur',st.blur)+sw('Pause clipboard history','pause',st.pause)+sw('Start with Windows','auto',st.auto)+'<div class="row"><span>City (weather)</span><input id="city" value="'+esc(st.city)+'" placeholder="e.g. Dhaka" style="all:unset;width:120px;text-align:right;color:var(--ink);font-size:13px"></div>'+sel('Day starts','wake',[5,6,7,8,9])+sel('Bedtime','bed',[21,22,23,24])+'</div><div class="col"><p class="t-label">Shortcut</p><div class="aiout" style="flex:none">Ctrl + Alt + Space opens or closes the notch.</div><button class="btn g" data-act="quit">Quit Notch</button></div></div>';
 panel.innerHTML=h}
 function capUpd(){var n=new Date(),a=[];if(st.focusOn)a.push('Focus  '+mmss(st.left));if(st.m.playing&&st.m.title)a.push(st.m.title);$('#clk').textContent=n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});$('#capTxt').innerHTML=esc(a.length?a[0]:'Ready')+(a.length>1?'<b class="more">+'+(a.length-1)+'</b>':'');notch.style.width=(!st.open&&a.length>1)?'290px':''}
-function setOpen(o){if(o===st.open)return;st.open=o;if(o){inv('set_expanded',{expanded:true}).then(function(){notch.classList.add('open');render();capUpd();say(st.seen?'Hi!':'Welcome! Drag an app onto me to add it. Ctrl+Alt+Space toggles me.');if(!st.seen){st.seen=true;save('seen',true)}})}else{notch.classList.remove('open');capUpd();setTimeout(function(){if(!st.open)inv('set_expanded',{expanded:false})},520)}}
+function setOpen(o){if(o===st.open)return;st.open=o;if(o){inv('set_expanded',{expanded:true}).then(function(){notch.classList.add('open');render();capUpd();say(st.seen?'Hi!':'Welcome! Drag an app onto me to add it. Ctrl+Alt+Space toggles me.');if(!st.seen){st.seen=true;save('seen',true)}})}else{notch.classList.remove('open');capUpd();setTimeout(function(){if(!st.open)inv('set_expanded',{expanded:false})},640)}}
 function addNote(){var i=$('#ni'),v=i.value.trim();if(!v)return;st.notes.unshift(v);save('notes',st.notes);i.value='';$('#nl').innerHTML=notesHtml();happy('Note saved.')}
 function pollMedia(){inv('media_info').then(function(m){var ch=m.title!==st.m.title||m.playing!==st.m.playing;st.m=m;document.body.classList.toggle('groove',m.playing);if(ch&&st.open&&(st.tab==='music'||st.tab==='home'))render();capUpd()}).catch(function(){})}
 $('#cap').onclick=function(){setOpen(true)};
