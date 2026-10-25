@@ -141,6 +141,23 @@ pub fn run() {
         )
         .setup(|app| {
             app.global_shortcut().register("CommandOrControl+Alt+Space")?;
+
+            // Tray icon: the notch has no taskbar button, so this is the way to open or quit it.
+            {
+                use tauri::menu::{Menu, MenuItem};
+                use tauri::tray::TrayIconBuilder;
+                let toggle = MenuItem::with_id(app, "toggle", "Open / close notch", true, None::<&str>)?;
+                let quit = MenuItem::with_id(app, "quit", "Quit Notch", true, None::<&str>)?;
+                let menu = Menu::with_items(app, &[&toggle, &quit])?;
+                let mut tb = TrayIconBuilder::new().menu(&menu).tooltip("Notch")
+                    .on_menu_event(|app, ev| match ev.id().0.as_str() {
+                        "toggle" => { let _ = app.emit("hotkey", ()); }
+                        "quit" => app.exit(0),
+                        _ => {}
+                    });
+                if let Some(ic) = app.default_window_icon() { tb = tb.icon(ic.clone()); }
+                tb.build(app)?;
+            }
             set_expanded(app.handle().clone(), false);
             if let Some(w) = app.get_webview_window("main") {
                 if let Ok(Some(m)) = w.current_monitor() {
