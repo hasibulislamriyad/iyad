@@ -13,7 +13,7 @@ struct MediaInfo { available: bool, title: String, artist: String, playing: bool
 mod win {
     use super::MediaInfo;
     use windows::Media::Control::*;
-    use windows::Win32::Foundation::RECT;
+    use windows::Win32::Foundation::{HWND, RECT};
     use windows::Win32::Graphics::Gdi::*;
     use windows::Win32::System::WinRT::{RoInitialize, RO_INIT_MULTITHREADED};
     use windows::Win32::System::DataExchange::{IsClipboardFormatAvailable, RegisterClipboardFormatW};
@@ -62,6 +62,22 @@ mod win {
         }
     }
 
+    // Resize and re-centre the window in ONE call so it never flickers or jumps.
+    pub fn resize_centered(hwnd: isize, new_w: i32, new_h: i32) {
+        unsafe {
+            let h = HWND(hwnd as *mut core::ffi::c_void);
+            let mut r = RECT::default();
+            if GetWindowRect(h, &mut r).is_err() { return; }
+            let mut x = (r.left + r.right) / 2 - new_w / 2;
+            let mon = MonitorFromWindow(h, MONITOR_DEFAULTTONEAREST);
+            let mut mi = MONITORINFO { cbSize: std::mem::size_of::<MONITORINFO>() as u32, ..Default::default() };
+            if GetMonitorInfoW(mon, &mut mi).as_bool() {
+                x = x.min(mi.rcMonitor.right - new_w).max(mi.rcMonitor.left);
+            }
+            let _ = SetWindowPos(h, HWND::default(), x, r.top, new_w, new_h, SWP_NOZORDER | SWP_NOACTIVATE);
+        }
+    }
+
     pub fn fullscreen() -> bool {
         unsafe {
             let h = GetForegroundWindow();
@@ -94,18 +110,15 @@ mod win {
 fn set_expanded(app: AppHandle, expanded: bool) {
     if let Some(w) = app.get_webview_window("main") {
         let (cw, ch) = if expanded { (680.0, 300.0) } else { (296.0, 36.0) };
-        let before = (w.outer_position().ok(), w.outer_size().ok());
-        let _ = w.set_size(LogicalSize::new(cw, ch));
-        // Grow and shrink around the notch's centre so both sides stay equal.
-        if let (Some(p), Some(sz)) = before {
-            let nw = cw * w.scale_factor().unwrap_or(1.0);
-            let mut x = p.x as f64 + sz.width as f64 / 2.0 - nw / 2.0;
-            if let Ok(Some(m)) = w.current_monitor() {
-                let (mx, mw) = (m.position().x as f64, m.size().width as f64);
-                x = x.min(mx + mw - nw).max(mx);
+        #[cfg(windows)]
+        {
+            let sf = w.scale_factor().unwrap_or(1.0);
+            if let Ok(h) = w.hwnd() {
+                win::resize_centered(h.0 as isize, (cw * sf).round() as i32, (ch * sf).round() as i32);
             }
-            let _ = w.set_position(tauri::PhysicalPosition::new(x as i32, p.y));
         }
+        #[cfg(not(windows))]
+        { let _ = w.set_size(LogicalSize::new(cw, ch)); }
         if expanded { let _ = w.set_focus(); }
     }
 }
