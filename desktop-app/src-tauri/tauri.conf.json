@@ -8,9 +8,9 @@
     "withGlobalTauri": true,
     "security": { "csp": null },
     "windows": [{
-      "label": "main", "title": "Notch", "width": 320, "height": 56, "x": 0, "y": 0,
+      "label": "main", "title": "Notch", "width": 296, "height": 36, "x": 0, "y": 0,
       "decorations": false, "transparent": true, "alwaysOnTop": true, "skipTaskbar": true,
-      "resizable": true, "shadow": true, "focus": false
+      "resizable": false, "shadow": false, "focus": false
     }]
   },
   "bundle": { "active": true, "targets": "all", "icon": ["icons/icon.ico", "icons/icon.png"] }
