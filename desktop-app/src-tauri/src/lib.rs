@@ -16,7 +16,9 @@ mod win {
     use windows::Win32::Foundation::RECT;
     use windows::Win32::Graphics::Gdi::*;
     use windows::Win32::System::WinRT::{RoInitialize, RO_INIT_MULTITHREADED};
+    use windows::Win32::System::DataExchange::{IsClipboardFormatAvailable, RegisterClipboardFormatW};
     use windows::Win32::UI::WindowsAndMessaging::*;
+    use windows::core::w;
 
     fn session() -> Option<GlobalSystemMediaTransportControlsSession> {
         unsafe { let _ = RoInitialize(RO_INIT_MULTITHREADED); }
@@ -52,6 +54,14 @@ mod win {
         }
     }
 
+    // Password managers flag secrets they copy; never record those.
+    pub fn clip_secret() -> bool {
+        unsafe {
+            let f = RegisterClipboardFormatW(w!("ExcludeClipboardContentFromMonitorProcessing"));
+            f != 0 && IsClipboardFormatAvailable(f).is_ok()
+        }
+    }
+
     pub fn fullscreen() -> bool {
         unsafe {
             let h = GetForegroundWindow();
@@ -75,6 +85,8 @@ mod win {
 #[cfg(not(windows))] fn media_now() -> MediaInfo { MediaInfo::default() }
 #[cfg(windows)] fn media_do(c: &str) { win::cmd(c) }
 #[cfg(not(windows))] fn media_do(_c: &str) {}
+#[cfg(windows)] fn clip_secret() -> bool { win::clip_secret() }
+#[cfg(not(windows))] fn clip_secret() -> bool { false }
 #[cfg(windows)] fn is_fullscreen() -> bool { win::fullscreen() }
 #[cfg(not(windows))] fn is_fullscreen() -> bool { false }
 
@@ -90,6 +102,14 @@ fn set_expanded(app: AppHandle, expanded: bool) {
 }
 
 #[tauri::command] fn set_autohide(on: bool) { AUTOHIDE.store(on, Ordering::Relaxed); }
+// Opens an app, shortcut, file or folder the user dropped on the notch.
+#[tauri::command]
+fn launch(path: String) {
+    #[cfg(windows)]
+    { let _ = std::process::Command::new("explorer").arg(&path).spawn(); }
+    #[cfg(not(windows))]
+    { let _ = &path; }
+}
 #[tauri::command] fn quit_app(app: AppHandle) { app.exit(0); }
 #[tauri::command]
 fn set_clipboard(text: String) {
@@ -100,6 +120,10 @@ fn set_clipboard(text: String) {
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            if let Some(w) = app.get_webview_window("main") { let _ = w.show(); }
+        }))
+        .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, None))
         .plugin(tauri_plugin_shell::init())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
@@ -146,6 +170,7 @@ pub fn run() {
                     if let Ok(t) = cb.get_text() {
                         if t != last && !t.trim().is_empty() {
                             last = t.clone();
+                            if clip_secret() { continue; }
                             let _ = h2.emit("clip", t);
                         }
                     }
@@ -154,7 +179,7 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            set_expanded, set_autohide, set_clipboard, media_info, media_cmd, quit_app
+            set_expanded, set_autohide, launch, set_clipboard, media_info, media_cmd, quit_app
         ])
         .run(tauri::generate_context!())
         .expect("error while running Notch");

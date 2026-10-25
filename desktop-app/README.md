@@ -45,3 +45,11 @@ Weather, calendar, Windows notifications, mic/camera indicator, file shelf, scre
 - `src/index.html` all UI (HTML, CSS, JS in one file, no external requests)
 - `src-tauri/src/lib.rs` window placement, media controls, clipboard watcher, fullscreen detection, hotkey
 - `src-tauri/tauri.conf.json` transparent, frameless, always-on-top window
+
+## v0.3 updates
+
+- Drag apps, shortcuts or files onto the notch (Apps / Files tabs). Click to open, right-click to remove.
+- Drag-in no longer collapses the notch; uses Tauri's native drop events.
+- Clipboard privacy: ignores copies flagged by password managers, "Pause clipboard history" switch, Clear button.
+- Settings: day start, bedtime, Start with Windows. Focus length remembered, sessions per day counted.
+- Welcome tip on first run, all text in English, single-instance app.
