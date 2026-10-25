@@ -125,7 +125,7 @@ body.fsg #exitfs{display:block}body.fsg .desk{filter:saturate(.3) brightness(.55
 
 html,body{background:transparent!important;overflow:hidden;min-height:0}.desk,.tb,.hint,#exitfs{display:none!important}#notch{top:6px}
 </style></head><body>
-<div id="notch"><button class="cap" id="cap" aria-label="Open notch"><span id="miniBug"></span><span class="st" id="capTxt"></span><span class="clk" id="clk"></span></button>
+<div id="notch" data-tauri-drag-region><button class="cap" id="cap" aria-label="Open notch" data-tauri-drag-region><span id="miniBug"></span><span class="st" id="capTxt" data-tauri-drag-region></span><span class="clk" id="clk" data-tauri-drag-region></span></button>
 <div class="full"><aside class="stage"><span id="bigBug"></span><div class="say" id="say" aria-live="polite"></div><div class="mood" id="mood"></div></aside>
 <section class="main"><div class="top2"><div class="rail" id="rail" role="tablist"><div class="pill" id="pill"></div></div></div><div class="panel" id="panel"></div></section></div></div>
 <script>
@@ -145,7 +145,7 @@ function esc(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;
 function mmss(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
 var st={tab:'home',open:false,focusOn:false,len:1500,left:1500,mood:'idle',clips:load('clips',[]),notes:load('notes',[]),q:'',fs:load('fs',true),blur:load('blur',true),m:{available:false,title:'',artist:'',playing:false}};
 inv('set_autohide',{on:st.fs});
-var tabs=[['home','Overview','home'],['clip','Clipboard','cb'],['notes','Notes','no'],['focus','Focus','tm'],['music','Media','mu'],['set','Settings','ge']];
+var tabs=[['home','Overview','home'],['clip','Clipboard','cb'],['notes','Notes','no'],['apps','Apps','grid'],['focus','Focus','tm'],['music','Media','mu'],['set','Settings','ge']];
 var moodTxt={idle:'Relaxed',happy:'Happy',focus:'Heads down',sleepy:'Sleeping'};
 var mouths={idle:'M42 68q8 9 16 0q-8 2-16 0z',happy:'M38 66q12 18 24 0q-12 3-24 0z',focus:'M44 69.5h12',sleepy:'M47 68q3-3 6 0q0 6-3 6t-3-6z'};
 function setMood(m){st.mood=m;document.body.dataset.mood=m;document.querySelectorAll('.mouth').forEach(function(e){e.setAttribute('d',mouths[m])});$('#mood').textContent=moodTxt[m]}
@@ -159,6 +159,7 @@ function render(){railHtml();var h='',n=new Date(),mins=n.getHours()*60+n.getMin
 if(st.tab==='home')h='<div class="bento"><div class="b w"><div><p class="t-label">'+n.toLocaleDateString([],{weekday:'long',day:'numeric',month:'long'})+'</p><div class="num">'+n.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})+'</div></div><div style="font-size:12.5px;color:var(--dim)">'+Math.floor(rem/60)+'h '+rem%60+'m until bedtime (11 pm)</div></div><div class="b d"><div><p class="t-label">Day progress</p><div class="num">'+pct+'%</div></div><div class="bar"><i style="width:'+pct+'%"></i></div></div><div class="b p"><div style="min-width:0"><div style="font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+t+'</div><div style="font-size:12px;color:var(--dim)">'+esc(st.m.artist||'')+'</div></div></div></div>';
 if(st.tab==='clip')h='<div class="ai"><div class="srch">'+ic('sr')+'<input id="cs" placeholder="Search clipboard" value="'+esc(st.q)+'"></div><div class="clips" id="cl">'+clipsHtml()+'</div></div>';
 if(st.tab==='notes')h='<div class="ai"><div class="srch">'+ic('no')+'<input id="ni" placeholder="Likho kichu, Enter chap"><button class="btn" data-act="addnote" style="padding:6px 14px">Save</button></div><div class="clips" id="nl">'+notesHtml()+'</div></div>';
+if(st.tab==='apps')h='<div class="apps">'+[['ge','Browser','#c3a6ff','browser'],['fo','Files','#f2a33a','files'],['ta','Terminal','#ff8f8f','cmd'],['no','Notepad','#8ee26b','note'],['tm','Calculator','#5bb4ff','calc']].map(function(a){return '<button class="app" data-app="'+a[3]+'"><span style="background:'+a[2]+'26;color:'+a[2]+'">'+ic(a[0])+'</span>'+a[1]+'</button>'}).join('')+'</div>';
 if(st.tab==='focus')h='<div class="focus"><div class="ring"><svg width="128" height="128" viewBox="0 0 128 128"><circle cx="64" cy="64" r="56" fill="none" stroke="#ffffff1c" stroke-width="8"/><circle id="fring" cx="64" cy="64" r="56" fill="none" stroke="#8db3ff" stroke-width="8" stroke-linecap="round" stroke-dasharray="351.9" stroke-dashoffset="'+(351.9*(1-(st.len-st.left)/st.len))+'"/></svg><div class="num" id="ft">'+mmss(st.left)+'</div></div><div><p class="t-label">'+(st.focusOn?'Session running':'Ready when you are')+'</p><div style="display:flex;gap:8px"><button class="btn" data-act="fb">'+(st.focusOn?'Pause':'Start focus')+'</button><button class="btn g" data-act="fr">Reset</button></div><div class="chips">'+[15,25,50].map(function(m){return '<button class="chip" data-len="'+m+'" aria-pressed="'+(st.len===m*60)+'">'+m+' min</button>'}).join('')+'</div></div></div>';
 if(st.tab==='music')h='<div class="music '+(st.m.playing?'playing':'')+'"><div style="display:flex;justify-content:space-between;align-items:flex-end;gap:10px"><div style="min-width:0"><div style="font-size:18px;font-weight:600;letter-spacing:-.01em">'+t+'</div><div class="t-label" style="margin:3px 0 0">'+esc(st.m.available?st.m.artist:'Play something in Spotify or your browser')+'</div></div><div class="eq"><i></i><i></i><i></i><i></i><i></i></div></div><div class="ctl"><button data-m="prev" aria-label="Previous">'+ic('pv',1)+'</button><button class="main-b" data-m="toggle" aria-label="Play or pause">'+ic(st.m.playing?'pa':'pl',1)+'</button><button data-m="next" aria-label="Next">'+ic('nx',1)+'</button></div></div>';
 if(st.tab==='set')h='<div class="two"><div class="list">'+sw('Hide in fullscreen apps','fs',st.fs)+sw('Collapse when I click away','blur',st.blur)+'</div><div class="col"><p class="t-label">Shortcut</p><div class="aiout" style="flex:none">Ctrl + Alt + Space opens or closes the notch.</div><button class="btn g" data-act="quit">Quit Notch</button></div></div>';
@@ -170,6 +171,16 @@ function pollMedia(){inv('media_info').then(function(m){var ch=m.title!==st.m.ti
 $('#cap').onclick=function(){setOpen(true)};
 document.addEventListener('click',function(e){var t;
 if(t=e.target.closest('[data-t]')){st.tab=t.dataset.t;render();return}
+if(t=e.target.closest('[data-app]')){
+  var a=t.dataset.app,tg='';
+  if(a==='browser')tg='https://google.com';
+  if(a==='files')tg='C:\\';
+  if(a==='cmd')tg='cmd.exe';
+  if(a==='note')tg='notepad.exe';
+  if(a==='calc')tg='calc.exe';
+  if(tg)inv('plugin:shell|open',{path:tg});
+  return;
+}
 if(t=e.target.closest('[data-m]')){inv('media_cmd',{cmd:t.dataset.m}).then(function(){setTimeout(pollMedia,400)});return}
 if(t=e.target.closest('[data-len]')){if(!st.focusOn){st.len=st.left=+t.dataset.len*60;render()}return}
 if(t=e.target.closest('[data-paste]')){inv('set_clipboard',{text:st.clips[t.dataset.paste].t});say('Copied again.');return}

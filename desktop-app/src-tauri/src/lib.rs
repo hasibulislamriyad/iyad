@@ -83,12 +83,6 @@ fn set_expanded(app: AppHandle, expanded: bool) {
     if let Some(w) = app.get_webview_window("main") {
         let (cw, ch) = if expanded { (720.0, 340.0) } else { (320.0, 56.0) };
         let _ = w.set_size(LogicalSize::new(cw, ch));
-        if let Ok(Some(m)) = w.current_monitor() {
-            let sf = m.scale_factor();
-            let mw = m.size().width as f64 / sf;
-            let (mx, my) = (m.position().x as f64 / sf, m.position().y as f64 / sf);
-            let _ = w.set_position(LogicalPosition::new(mx + (mw - cw) / 2.0, my));
-        }
         if expanded { let _ = w.set_focus(); }
     }
 }
@@ -104,6 +98,7 @@ fn set_clipboard(text: String) {
 
 pub fn run() {
     tauri::Builder::default()
+        .plugin(tauri_plugin_shell::init())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(|app, _sc, ev| {
