@@ -15,9 +15,9 @@ linear-gradient(180deg,#bfe6e2 0,#7fc4bd 38%,#3a8f7f 62%,#1c5a49 100%)}
 .tb i{width:26px;height:26px;border-radius:8px;background:#ffffff59}
 .hint{position:fixed;top:calc(74px + env(safe-area-inset-top,0px));left:0;right:0;text-align:center;font-size:13px;color:#06231ecc;transition:opacity .3s}
 body.open .hint{opacity:0}
-#notch{position:fixed;top:0;left:50%;transform:translateX(-50%);width:236px;height:34px;max-width:calc(100vw - 16px);background:#000;border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 8px 24px #000a;transition:width .5s cubic-bezier(.2,.9,.25,1),height .5s cubic-bezier(.2,.9,.25,1),border-radius .5s,transform .45s cubic-bezier(.2,.9,.25,1);z-index:5;-webkit-app-region:drag}
-#notch.open{width:680px;height:300px;border-radius:0 0 24px 24px;-webkit-app-region:no-drag}
-.cap{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;height:34px;padding:0 14px 0 7px;cursor:pointer;font-size:12px;font-weight:500;position:absolute;top:0;left:0;transition:opacity .2s;-webkit-app-region:drag}
+#notch{position:fixed;top:0;left:50%;transform:translateX(-50%);width:236px;height:34px;max-width:calc(100vw - 16px);background:#000;border-radius:0 0 16px 16px;overflow:hidden;box-shadow:0 8px 24px #000a;transition:width .5s cubic-bezier(.2,.9,.25,1),height .5s cubic-bezier(.2,.9,.25,1),border-radius .5s,transform .45s cubic-bezier(.2,.9,.25,1);z-index:5}
+#notch.open{width:680px;height:300px;border-radius:0 0 24px 24px}
+.cap{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;width:100%;height:34px;padding:0 14px 0 7px;cursor:move;font-size:12px;font-weight:500;position:absolute;top:0;left:0;transition:opacity .2s}
 .cap:focus-visible,button:focus-visible{outline:2px solid var(--sky);outline-offset:2px}
 .cap .st{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8ece6}
 .cap .clk{font-variant-numeric:tabular-nums;color:var(--dim)}
@@ -125,7 +125,7 @@ body.fsg #exitfs{display:block}body.fsg .desk{filter:saturate(.3) brightness(.55
 
 html,body{background:transparent!important;overflow:hidden;min-height:0}.desk,.tb,.hint,#exitfs{display:none!important}#notch{top:0}
 </style></head><body>
-<div id="notch" data-tauri-drag-region><button class="cap" id="cap" aria-label="Open notch" data-tauri-drag-region><span id="miniBug"></span><span class="st" id="capTxt" data-tauri-drag-region></span><span class="clk" id="clk" data-tauri-drag-region></span></button>
+<div id="notch"><div class="cap" id="cap" aria-label="Open notch"><span id="miniBug"></span><span class="st" id="capTxt"></span><span class="clk" id="clk"></span></div>
 <div class="full"><aside class="stage"><span id="bigBug"></span><div class="say" id="say" aria-live="polite"></div><div class="mood" id="mood"></div></aside>
 <section class="main"><div class="top2"><div class="rail" id="rail" role="tablist"><div class="pill" id="pill"></div></div></div><div class="panel" id="panel"></div></section></div></div>
 <script>
@@ -139,6 +139,7 @@ var arm=function(c,x,r){return '<g class="arm '+c+'"><ellipse cx="'+x+'" cy="66"
 return '<svg class="bug" width="'+s+'" height="'+s+'" viewBox="0 0 100 100"><defs><linearGradient id="g'+id+'" gradientUnits="userSpaceOnUse" x1="0" y1="12" x2="0" y2="92"><stop offset="0" stop-color="#86adf8"/><stop offset=".55" stop-color="#5b86ee"/><stop offset="1" stop-color="#3a5fd0"/></linearGradient><filter id="f'+id+'" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="3" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .7 -.22" result="m"/><feComposite in="m" in2="SourceGraphic" operator="in"/></filter></defs><ellipse cx="36" cy="91" rx="9" ry="5" fill="#3a5fd0"/><ellipse cx="64" cy="91" rx="9" ry="5" fill="#3a5fd0"/>'+arm('al',13,22)+arm('ar',87,-22)+sil('url(#g'+id+')')+'<g filter="url(#f'+id+')" opacity=".55">'+sil('#fff')+'</g><ellipse cx="50" cy="52" rx="27" ry="20" fill="#a9c6ff" opacity=".35"/>'+eye(36)+eye(64)+brow(36)+brow(64)+'<ellipse class="chk" cx="21" cy="68" rx="6" ry="3.4" fill="#ff9fc0"/><ellipse class="chk" cx="79" cy="68" rx="6" ry="3.4" fill="#ff9fc0"/><ellipse cx="50" cy="62" rx="3.4" ry="2.5" fill="#1b2a72"/><path class="mouth" d="M42 68q8 9 16 0q-8 2-16 0z" fill="#4a1233" stroke="#1b1040" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>'}
 $('#miniBug').innerHTML=bug(26,'a');$('#bigBug').innerHTML=bug(104,'b');
 var T=window.__TAURI__,inv=T.core.invoke,lis=T.event.listen,notch=$('#notch'),panel=$('#panel');
+$('#cap').onmousedown=function(e){if(!st.open)T.window.getCurrentWindow().startDragging()};
 function load(k,d){try{var v=JSON.parse(localStorage.getItem('n_'+k));return v===null?d:v}catch(e){return d}}
 function save(k,v){try{localStorage.setItem('n_'+k,JSON.stringify(v))}catch(e){}}
 function esc(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
