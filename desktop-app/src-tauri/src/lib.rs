@@ -83,14 +83,15 @@ fn set_expanded(app: AppHandle, expanded: bool) {
     if let Some(w) = app.get_webview_window("main") {
         let (cw, ch) = if expanded { (720.0, 340.0) } else { (320.0, 56.0) };
         let _ = w.set_size(LogicalSize::new(cw, ch));
-        if let Ok(Some(m)) = w.current_monitor() {
-            let sf = m.scale_factor();
-            let mw = m.size().width as f64 / sf;
-            let (mx, my) = (m.position().x as f64 / sf, m.position().y as f64 / sf);
-            // Always set Y to 0 so it stays flush with top
-            let _ = w.set_position(LogicalPosition::new(mx + (mw - cw) / 2.0, my));
+        if expanded {
+            if let Ok(Some(m)) = w.current_monitor() {
+                let sf = m.scale_factor();
+                let mw = m.size().width as f64 / sf;
+                let (mx, my) = (m.position().x as f64 / sf, m.position().y as f64 / sf);
+                let _ = w.set_position(LogicalPosition::new(mx + (mw - cw) / 2.0, my));
+            }
+            let _ = w.set_focus();
         }
-        if expanded { let _ = w.set_focus(); }
     }
 }
 

@@ -10,7 +10,7 @@
     "windows": [{
       "label": "main", "title": "Notch", "width": 320, "height": 56, "x": 0, "y": 0,
       "decorations": false, "transparent": true, "alwaysOnTop": true, "skipTaskbar": true,
-      "resizable": false, "shadow": false, "focus": false
+      "resizable": true, "shadow": true, "focus": false
     }]
   },
   "bundle": { "active": true, "targets": "all", "icon": ["icons/icon.ico", "icons/icon.png"] }
