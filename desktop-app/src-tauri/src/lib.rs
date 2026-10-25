@@ -94,17 +94,19 @@ mod win {
 fn set_expanded(app: AppHandle, expanded: bool) {
     if let Some(w) = app.get_webview_window("main") {
         let (cw, ch) = if expanded { (680.0, 300.0) } else { (296.0, 36.0) };
+        let before = (w.outer_position().ok(), w.outer_size().ok());
         let _ = w.set_size(LogicalSize::new(cw, ch));
-        if expanded {
-            // keep the window fully on screen after it grows
-            if let (Ok(Some(m)), Ok(p)) = (w.current_monitor(), w.outer_position()) {
-                let nw = cw * m.scale_factor();
+        // Grow and shrink around the notch's centre so both sides stay equal.
+        if let (Some(p), Some(sz)) = before {
+            let nw = cw * w.scale_factor().unwrap_or(1.0);
+            let mut x = p.x as f64 + sz.width as f64 / 2.0 - nw / 2.0;
+            if let Ok(Some(m)) = w.current_monitor() {
                 let (mx, mw) = (m.position().x as f64, m.size().width as f64);
-                let x = (p.x as f64).min(mx + mw - nw).max(mx);
-                let _ = w.set_position(tauri::PhysicalPosition::new(x as i32, p.y));
+                x = x.min(mx + mw - nw).max(mx);
             }
-            let _ = w.set_focus();
+            let _ = w.set_position(tauri::PhysicalPosition::new(x as i32, p.y));
         }
+        if expanded { let _ = w.set_focus(); }
     }
 }
 
@@ -164,7 +166,7 @@ pub fn run() {
                     let sf = m.scale_factor();
                     let mw = m.size().width as f64 / sf;
                     let (mx, my) = (m.position().x as f64 / sf, m.position().y as f64 / sf);
-                    let _ = w.set_position(LogicalPosition::new(mx + (mw - 236.0) / 2.0, my));
+                    let _ = w.set_position(LogicalPosition::new(mx + (mw - 296.0) / 2.0, my));
                 }
             }
 
