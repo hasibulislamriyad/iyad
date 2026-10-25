@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Notch – a small companion for the top of your screen</title>
+<meta name="description" content="Music, clipboard history, notes and a focus timer in one notch at the top of your Windows screen, with a mascot who keeps you company.">
+<link rel="icon" href="/favicon.png"><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#eef3ff">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#eef3ff;--ink:#0c1433;--dim:#56607f;--blue:#4a74e6;--deep:#16226b;--card:#fff;--font:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{--bg:#0b1024;--ink:#eef2ff;--dim:#9aa6cc;--blue:#8db3ff;--deep:#cfd9ff;--card:#141b3a;color-scheme:dark}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+header{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+.logo{font-weight:800;font-size:20px;letter-spacing:-.02em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo img{width:28px;height:28px}
+nav a{margin-left:22px;text-decoration:none;color:var(--dim);font-weight:500;font-size:15px}
+nav a:hover{color:var(--ink)}
+.hero{display:grid;grid-template-columns:1fr 1.25fr;gap:44px;align-items:center;padding:36px 0 70px}
+h1{font-size:clamp(38px,5.2vw,64px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:0 0 20px}
+.lead{font-size:19px;color:var(--dim);max-width:30em;margin:0 0 28px}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;border:0;cursor:pointer;font:inherit;font-weight:600;font-size:16px;padding:14px 24px;border-radius:14px;text-decoration:none;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.p{background:var(--blue);color:#fff}
+.btn.s{background:var(--card);color:var(--ink);box-shadow:inset 0 0 0 1.5px #4a74e655}
+.fine{font-size:14px;color:var(--dim);margin-top:14px}
+.frame{border-radius:26px;overflow:hidden;box-shadow:0 30px 70px #16226b40;background:#1c4f5c;line-height:0}
+.frame iframe{width:100%;height:470px;border:0}
+.cap{font-size:13px;color:var(--dim);margin:12px 4px 0;line-height:1.4}
+h2{font-size:clamp(28px,3.4vw,40px);letter-spacing:-.03em;line-height:1.1;margin:0 0 30px;font-weight:700}
+section{padding:60px 0}
+.feat{display:grid;grid-template-columns:repeat(2,1fr);gap:34px 64px}
+.feat h3{margin:0 0 6px;font-size:21px;letter-spacing:-.02em}
+.feat p{margin:0;color:var(--dim);max-width:26em}
+.feat div:nth-child(1),.feat div:nth-child(4){grid-column:1}
+.get{background:var(--card);border-radius:32px;padding:44px;display:grid;grid-template-columns:1fr 1fr;gap:44px}
+.get h3{margin:0 0 8px;font-size:22px}
+.get p{color:var(--dim);margin:0 0 18px}
+ol{margin:0;padding-left:20px;color:var(--dim)}ol li{margin-bottom:6px}
+details{background:var(--card);border-radius:16px;padding:16px 20px;margin-bottom:10px}
+summary{cursor:pointer;font-weight:600}
+details p{color:var(--dim);margin:10px 0 0}
+footer{padding:40px 0 60px;color:var(--dim);font-size:14px}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+@media(max-width:860px){.hero,.get,.feat{grid-template-columns:1fr}.get{padding:28px}.frame iframe{height:420px}nav a:not(.keep){display:none}}
+</style></head><body>
+<div class="wrap">
+<header><a class="logo" href="#"><img src="/icon-192.png" alt="">Notch</a><nav><a href="#features">Features</a><a href="#faq">Questions</a><a class="keep" href="#get">Download</a></nav></header>
+<main>
+<div class="hero">
+ <div>
+  <h1>A small friend at the top of your screen.</h1>
+  <p class="lead">Notch gives the top edge of Windows a job: your music, everything you copied, quick notes and a focus timer, plus a mascot who cheers you on and tells you when to rest.</p>
+  <div class="btns"><a class="btn p" href="#get">Download for Windows</a><a class="btn s" href="/demo.html">Open it in your browser</a></div>
+  <p class="fine">Free while in beta. Windows 10 and 11.</p>
+ </div>
+ <div><div class="frame"><iframe src="/demo.html" title="Interactive Notch demo" loading="lazy"></iframe></div><p class="cap">This is a live demo. Click the notch at the top, then try the tabs.</p></div>
+</div>
+
+<section id="features">
+ <h2>Everything stays one glance away.</h2>
+ <div class="feat">
+  <div><h3>Music without switching windows</h3><p>Play, pause and skip for Spotify, YouTube or anything that uses Windows media controls.</p></div>
+  <div><h3>A clipboard that remembers</h3><p>Search what you copied earlier today. Pin the things you paste again and again.</p></div>
+  <div><h3>Notes that don’t get lost</h3><p>Write it down and get back to work. Notes stay on your PC.</p></div>
+  <div><h3>A timer that sits with you</h3><p>Choose 15, 25 or 50 minutes. The countdown lives in the notch while you work.</p></div>
+  <div><h3>Gets out of the way</h3><p>When a game or video goes fullscreen, Notch hides itself and comes back after.</p></div>
+  <div><h3>A mascot with moods</h3><p>It celebrates when you finish, frowns when you focus, and falls asleep when you leave.</p></div>
+ </div>
+</section>
+
+<section id="get">
+ <div class="get">
+  <div>
+   <h3>Windows app</h3>
+   <p>The full version with real media controls, clipboard history and fullscreen detection.</p>
+   <a class="btn p" id="dl" href="#">Download Notch for Windows</a>
+   <p class="fine" id="dlmsg"></p>
+  </div>
+  <div>
+   <h3>If Windows says “protected your PC”</h3>
+   <ol><li>Click <b>More info</b></li><li>Click <b>Run anyway</b></li><li>Follow the installer. It takes a few seconds.</li></ol>
+   <p class="fine">This message appears for new apps that aren’t code-signed yet.</p>
+  </div>
+  <div>
+   <h3>Web version</h3>
+   <p>Nothing to download. Install it as an app from your browser and open it like any other window.</p>
+   <button class="btn s" id="pwa">Install web version</button>
+   <p class="fine" id="pwamsg"></p>
+  </div>
+  <div>
+   <h3>What’s inside the web version</h3>
+   <p>Notes, focus timer, clipboard shelf, converter and the mascot. Media control and fullscreen detection need the Windows app.</p>
+  </div>
+ </div>
+</section>
+
+<section id="faq">
+ <h2>Questions</h2>
+ <details><summary>Does Notch send my data anywhere?</summary><p>No. Notes and clipboard history are saved on your own computer, and the app makes no network requests.</p></details>
+ <details><summary>Will it get in the way of games?</summary><p>It hides itself when a fullscreen app is in front, and you can switch that off in Settings.</p></details>
+ <details><summary>Does it cost anything?</summary><p>It’s free during the beta. If that changes, early users will hear first.</p></details>
+ <details><summary>What about Mac or Linux?</summary><p>Windows first. Other systems come later.</p></details>
+</section>
+</main>
+<footer>Notch · Made with care. © 2026</footer>
+</div>
+<script>
+/* 1) After you build the installer, paste its link here. Example:
+      https://github.com/hasibulislamriyad/iyad/releases/latest/download/Notch_0.1.0_x64-setup.exe */
+var DOWNLOAD_URL='https://github.com/hasibulislamriyad/iyad/releases/latest/download/Notch_0.1.0_x64-setup.exe';
+var dl=document.getElementById('dl');
+if(DOWNLOAD_URL.indexOf('YOUR-NAME')>-1){dl.addEventListener('click',function(e){e.preventDefault();document.getElementById('dlmsg').textContent='The installer isn’t published yet. Try the web version in the meantime.'})}else{dl.href=DOWNLOAD_URL}
+var dp;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e});
+document.getElementById('pwa').onclick=function(){if(dp){dp.prompt()}else{document.getElementById('pwamsg').textContent='In Chrome or Edge, open the browser menu and choose “Install Notch”. Open the web version first if you don’t see it.'}};
+if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(function(){});
+</script>
+</body></html>
