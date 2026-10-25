@@ -109,7 +109,7 @@ mod win {
 #[tauri::command]
 fn set_expanded(app: AppHandle, expanded: bool) {
     if let Some(w) = app.get_webview_window("main") {
-        let (cw, ch) = if expanded { (680.0, 300.0) } else { (296.0, 36.0) };
+        let (cw, ch) = if expanded { (600.0, 264.0) } else { (296.0, 36.0) };
         #[cfg(windows)]
         {
             let sf = w.scale_factor().unwrap_or(1.0);

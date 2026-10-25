@@ -125,6 +125,26 @@ body.fsg #exitfs{display:block}body.fsg .desk{filter:saturate(.3) brightness(.55
 
 html,body{background:transparent!important;overflow:hidden;min-height:0}.desk,.tb,.hint,#exitfs{display:none!important}#notch{top:0;left:50%;transform:translateX(-50%)}
 .full{grid-template-rows:minmax(0,1fr)}.main{min-height:0}.panel{overflow-y:auto;overscroll-behavior:contain;min-height:0}.panel::-webkit-scrollbar{width:6px}.panel::-webkit-scrollbar-thumb{background:#ffffff33;border-radius:3px}.two{height:auto;min-height:100%}
+
+/* ---- v0.4 modern pass: compact island, hairline glass, spring motion ---- */
+:root{--font:"Segoe UI Variable Display","Segoe UI",system-ui,sans-serif;--ink:#f5f5f7;--dim:#8e8e93;--fill:#ffffff0d;--line:#ffffff12}
+body{font-feature-settings:"tnum";-webkit-font-smoothing:antialiased}
+#notch{border-radius:0 0 18px 18px;box-shadow:inset 0 -1px 0 #ffffff14,0 0 0 1px #ffffff08;transition:width .55s cubic-bezier(.3,1.15,.4,1),height .55s cubic-bezier(.3,1.15,.4,1),border-radius .55s,transform .45s cubic-bezier(.2,.9,.25,1)}
+#notch.open{width:600px;height:264px;border-radius:0 0 32px 32px}
+.full{grid-template-columns:128px 1fr}
+.stage{padding:18px 0 14px 14px;margin:12px 0}
+.stage .bug{width:80px;height:80px}
+.say{font-size:12.5px;padding-right:12px}
+.main{padding:14px 16px 14px 14px;gap:12px}
+.rail{background:var(--fill);border:1px solid var(--line);border-radius:16px;padding:3px}
+.rail button{padding:6px 10px;border-radius:13px}.rail .pill{border-radius:13px;box-shadow:0 2px 10px #0006}
+.b,.list,.clip,.app,.aiout,.srch,.chip{border:1px solid var(--line)}
+.b.w{border-radius:24px 12px 12px 24px}.b.d{border-radius:12px 24px 12px 12px}.b.p{border-radius:12px 12px 24px 12px}
+.num{font-size:32px;letter-spacing:-.035em}
+.app{border-radius:18px}.list,.aiout{border-radius:18px}
+.btn{border-radius:14px}
+#notch.open .panel>*{animation:rise .5s .12s both cubic-bezier(.2,.9,.3,1)}
+@keyframes rise{from{opacity:0;transform:translateY(10px) scale(.985)}}
 </style></head><body>
 <div id="notch"><div class="cap" id="cap" aria-label="Open notch"><span id="miniBug"></span><span class="st" id="capTxt"></span><span class="clk" id="clk"></span></div>
 <div class="full"><aside class="stage"><span id="bigBug"></span><div class="say" id="say" aria-live="polite"></div><div class="mood" id="mood"></div></aside>
