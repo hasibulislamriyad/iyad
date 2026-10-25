@@ -1,4 +1,0 @@
-{
-  "buildCommand": "mkdir -p public && cp -R site/. public/",
-  "outputDirectory": "public"
-}
